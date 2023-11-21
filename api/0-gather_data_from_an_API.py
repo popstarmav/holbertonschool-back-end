@@ -38,6 +38,11 @@ if __name__ == "__main__":
         # Display information
         print(f"Employee {user_data['name']} is done with tasks("
               f"{completed_tasks}/{total_tasks}):")
+
+        # Additional print statements for debugging
+        print("Total Tasks:", total_tasks)
+        print("Completed Tasks:", completed_tasks)
+
         for task in todo_data:
             if task['completed']:
                 print(f"\t {task['title']}")
