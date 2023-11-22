@@ -3,8 +3,8 @@
 place holder
 """
 
-import requests
 import csv
+import requests
 from sys import argv
 
 if __name__ == "__main__":
@@ -27,15 +27,15 @@ if __name__ == "__main__":
     todos_data = todos_response.json()
 
     # Create CSV file
-    csv_file_name = f"{user_id}.csv"
-    with open(csv_file_name, 'w', newline='') as csvfile:
-        csv_writer = csv.writer(csvfile)
-        
+    file_name = f"{user_id}.csv"
+    with open(file_name, 'w', newline='') as csv_file:
+        csv_writer = csv.writer(csv_file, delimiter=',', quoting=csv.QUOTE_ALL)
+
         # Write header
         csv_writer.writerow(["USER_ID", "USERNAME", "TASK_COMPLETED_STATUS", "TASK_TITLE"])
 
         # Write tasks data
-        for task in todos_data:
-            csv_writer.writerow([user_id, user_name, str(task['completed']), task['title']])
+        for todo in todos_data:
+            csv_writer.writerow([user_id, user_name, str(todo['completed']), todo['title']])
 
-    print(f"Data exported to {csv_file_name}")
+    print(f"Data exported to {file_name}")
