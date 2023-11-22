@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-place holder
+Dictionary of list of dictionaries
 """
 
 import requests

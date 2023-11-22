@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-place holder
+Export to JSON
 """
 
 import requests
