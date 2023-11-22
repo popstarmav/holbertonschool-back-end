@@ -1,51 +1,36 @@
 #!/usr/bin/python3
 """
-Script that, using this REST API, for a given employee ID,
-returns information about his/her TODO list progress.
+place holder
 """
 
-import requests
-from sys import argv
-
 if __name__ == "__main__":
-    if len(argv) != 2 or not argv[1].isdigit():
-        print("Usage: {} employee_id".format(argv[0]))
+
+    import requests
+    from sys import argv
+    if len(argv) < 2:
         exit()
 
-    employee_id = int(argv[1])
+    user_id = argv[1]
 
-    # Fetch user data
-    user_url = (
-        "https://jsonplaceholder.typicode.com/users/{}"
-        .format(employee_id)
+    todos_response = requests.get(
+        f"https://jsonplaceholder.typicode.com/todos?"
+        f"userId={user_id}&completed=true"
     )
-    todo_url = (
-        "https://jsonplaceholder.typicode.com/todos?userId={}"
-        .format(employee_id)
+    name_response = requests.get(
+        f"https://jsonplaceholder.typicode.com/users?id={user_id}"
     )
+    todos_data = todos_response.json()
+    name_data = name_response.json()
 
-    try:
-        user_response = requests.get(user_url)
-        todo_response = requests.get(todo_url)
+    name = name_data[0]["name"] if name_data else None
+    total_tasks = len(todos_data)
 
-        user_data = user_response.json()
-        todo_data = todo_response.json()
+    todo_list = []
 
-        # Count completed and total tasks
-        total_tasks = len(todo_data)
-        completed_tasks = sum(1 for task in todo_data if task['completed'])
+    for task in todos_data:
+        todo_list.append(f"\t{task['title']}")
 
-        # Display information
-        print(f"Employee {user_data['name']} is done with tasks("
-              f"{completed_tasks}/{total_tasks}):")
+    print(f"Employee {name} is done with tasks({total_tasks}/{total_tasks}):")
 
-        # Additional print statements for debugging
-        print("Total Tasks:", total_tasks)
-        print("Completed Tasks:", completed_tasks)
-
-        for task in todo_data:
-            if task['completed']:
-                print(f"\t {task['title']}")
-
-    except requests.exceptions.RequestException as e:
-        print(f"Error: {e}")
+    for task in todo_list:
+        print(task)
