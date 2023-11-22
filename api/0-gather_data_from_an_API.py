@@ -24,11 +24,15 @@ if __name__ == "__main__":
     name = name_data[0]["name"] if name_data else None
 
     todos_data = todos_response.json()
-    total_tasks = len(todos_data)
 
-    todo_list = [f"\t{task['title']}" for task in todos_data]
+    # Filter completed tasks
+    completed_tasks = [task for task in todos_data if task['completed']]
 
-    print(f"Employee {name} is done with tasks({total_tasks}/{total_tasks}):")
+    total_tasks = len(completed_tasks)
+
+    todo_list = [f"\t{task['title']}" for task in completed_tasks]
+
+    print(f"Employee {name} is done with tasks({total_tasks}/20):")
 
     for task in todo_list:
         print(task)
