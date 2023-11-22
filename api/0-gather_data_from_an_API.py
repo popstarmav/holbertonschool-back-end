@@ -1,43 +1,41 @@
 #!/usr/bin/python3
 """
-Gather data from an API
+Script that, using this REST API, for a given employee ID,
+returns information about his/her TODO list progress.
 """
 
 import requests
 from sys import argv
 
+def get_user_data(employee_id):
+    user_url = f"https://jsonplaceholder.typicode.com/users/{employee_id}"
+    response = requests.get(user_url)
+    return response.json() if response.ok else None
+
+def get_todo_data(employee_id):
+    todo_url = f"https://jsonplaceholder.typicode.com/todos?userId={employee_id}"
+    response = requests.get(todo_url)
+    return response.json() if response.ok else None
+
 if __name__ == "__main__":
-    if len(argv) < 2:
+    if len(argv) != 2 or not argv[1].isdigit():
+        print("Usage: {} employee_id".format(argv[0]))
         exit()
 
-    user_id = argv[1]
+    employee_id = int(argv[1])
 
-    # Fetch completed tasks
-    completed_todos_response = requests.get(
-        f"https://jsonplaceholder.typicode.com/todos?userId={user_id}&completed=true"
-    )
-    completed_todos_data = completed_todos_response.json()
+    user_data = get_user_data(employee_id)
+    todo_data = get_todo_data(employee_id)
 
-    # Fetch user data
-    user_response = requests.get(
-        f"https://jsonplaceholder.typicode.com/users?id={user_id}"
-    )
-    user_data = user_response.json()
-    user_name = user_data[0]["name"] if user_data else None
+    if not user_data or not todo_data:
+        print("Error: Unable to fetch data.")
+        exit()
 
-    # Fetch all tasks
-    all_todos_response = requests.get(
-        f"https://jsonplaceholder.typicode.com/todos?userId={user_id}"
-    )
-    all_todos_data = all_todos_response.json()
-    total_tasks = len(all_todos_data)
+    total_tasks = len(todo_data)
+    completed_tasks = sum(1 for task in todo_data if task['completed'])
 
-    todo_list = []
+    print(f"Employee {user_data['name']} is done with tasks({completed_tasks}/{total_tasks}):")
 
-    for task in completed_todos_data:
-        todo_list.append(f"\t {task['title']}")
-
-    print(f"Employee {user_name} is done with tasks({len(completed_todos_data)}/{total_tasks}):")
-    
-    for task in todo_list:
-        print(task)
+    for task in todo_data:
+        if task['completed']:
+            print(f"\t{task['title']}")
